@@ -1,0 +1,1 @@
+void simplify_json(char json_content[]);

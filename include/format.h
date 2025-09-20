@@ -1,0 +1,1 @@
+char* format_json(char* content_pointer);
