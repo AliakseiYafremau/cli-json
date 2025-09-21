@@ -1,1 +1,0 @@
-void read_json(char* content_pointer);

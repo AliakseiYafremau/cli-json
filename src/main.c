@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "read.h"
 #include "format.h"
 #include "file_management.h"
 
@@ -28,14 +27,14 @@ int parse_arguments(int argc, char *argv[]) {
         return 1;
     } else if (!(strcmp(argv[1], "read"))) {
         char* file_content_pointer = read_file("example.json");
-        read_json(file_content_pointer);
         printf("%s\n", file_content_pointer);
         free(file_content_pointer);
     } else if (!(strcmp(argv[1], "format"))) {
         char* file_content_pointer = read_file("example.json");
-        format_json(file_content_pointer);
-        printf("%s\n", file_content_pointer);
+        char* formated = format_json(file_content_pointer);
+        printf("%s\n", formated);
         free(file_content_pointer);
+        free(formated);
     }
     
     return 0;
