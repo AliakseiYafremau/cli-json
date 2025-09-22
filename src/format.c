@@ -17,14 +17,15 @@ char* format_json(char* content_pointer) {
             int offsite = 2;
             if (level != 0) {
                 offsite += level * 2;
-                // char* resized_pointer = realloc(formated_content, content_length + 1 + 1); // content_length + '\0' + '\n'(back) + '\n'
-                // formated_content = resized_pointer;
-                // memmove(formated_content + i + 1 + 1, formated_content + i, content_length + 1 - i);
-                // formated_content[i] = ' ';
-                // i++;
-                // content_length++;
+
+                char* resized_pointer = realloc(formated_content, content_length + 1 + 1); // content_length + '\0' + '\n'(back) + '\n'
+                formated_content = resized_pointer;
+                memmove(formated_content + i + 1, formated_content + i, content_length + 1 - i);
+                formated_content[i] = ' ';
+                i++;
+                content_length++;
                 
-                char* resized_pointer = realloc(formated_content, content_length + 1 + 1 + offsite); // content_length + '\0' + '\n'
+                resized_pointer = realloc(formated_content, content_length + 1 + 1 + offsite); // content_length + '\0' + '\n'
                 formated_content = resized_pointer;
                 memmove(formated_content + i + 1 + 1 + offsite, formated_content + i + 1, content_length - i);
                 
