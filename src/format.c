@@ -13,6 +13,14 @@ char* format_json(char* content_pointer) {
     int level = 0;
 
     for (int i = 0; i < content_length; i++) {
+        if ((formated_content[i] == ':') || (formated_content[i] == ',')) {
+            char* resized_pointer = realloc(formated_content, content_length + 1 + 1);
+            formated_content = resized_pointer;
+            memmove(formated_content + i + 1 + 1, formated_content + i + 1, content_length - i);
+            formated_content[i+1] = ' ';
+            i++;
+            content_length++;
+        }
         if (formated_content[i] == '{') {
             int offsite = 2;
             if (level != 0) {
