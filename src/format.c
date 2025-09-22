@@ -14,16 +14,45 @@ char* format_json(char* content_pointer) {
 
     for (int i = 0; i < content_length; i++) {
         if (formated_content[i] == '{') {
-            char* resized_pointer = realloc(formated_content, content_length + 1 + 3);
-            formated_content = resized_pointer;
-            memmove(formated_content + i + 3 + 1, formated_content + i + 1, content_length - i);
-            formated_content[i+1] = '\n';
-            formated_content[i+2] = ' ';
-            formated_content[i+3] = ' ';
+            int offsite = 2;
+            if (level != 0) {
+                offsite += level * 2;
+                // char* resized_pointer = realloc(formated_content, content_length + 1 + 1); // content_length + '\0' + '\n'(back) + '\n'
+                // formated_content = resized_pointer;
+                // memmove(formated_content + i + 1 + 1, formated_content + i, content_length + 1 - i);
+                // formated_content[i] = ' ';
+                // i++;
+                // content_length++;
+                
+                char* resized_pointer = realloc(formated_content, content_length + 1 + 1 + offsite); // content_length + '\0' + '\n'
+                formated_content = resized_pointer;
+                memmove(formated_content + i + 1 + 1 + offsite, formated_content + i + 1, content_length - i);
+                
+                formated_content[i+1] = '\n';
+                for (int offsite_count = 0; offsite_count < offsite; offsite_count++) {
+                    formated_content[i + 2 + offsite_count] = ' ';
+                }
 
-            content_length += 3;
-            i += 3;
-            level++;
+                content_length += 3 + offsite;
+                i += 3 + offsite;
+                level++;
+
+            } else {
+                char* resized_pointer = realloc(formated_content, content_length + 1 + 1 + offsite); // content_length + '\0' + '\n'
+                formated_content = resized_pointer;
+                memmove(formated_content + i + 1 + 1 + offsite, formated_content + i + 1, content_length - i);
+                
+                formated_content[i+1] = '\n';
+                for (int offsite_count = 2; offsite_count <= offsite+1; offsite_count++) {
+                    formated_content[i + offsite_count] = ' ';
+                }
+
+                content_length += 3 + offsite;
+                i += 3 + offsite;
+                level++;
+            }
+
+            
         }
         if (formated_content[i] == '}') {
             char* resized_pointer = realloc(formated_content, content_length + 1 + 3);
