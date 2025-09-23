@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 // Get the file size
-long file_size(FILE *file) {
+long file_size(FILE* file) {
     fseek(file, 0, SEEK_END);
     long file_length = ftell(file);
     rewind(file);
@@ -12,7 +11,7 @@ long file_size(FILE *file) {
 
 // Return the file content
 char* read_file(const char file_name[]) {
-    FILE *file = fopen(file_name, "r");
+    FILE* file = fopen(file_name, "r");
 
     long length = file_size(file);
     char* file_content = malloc(length + 1);

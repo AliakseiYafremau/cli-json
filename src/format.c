@@ -1,7 +1,8 @@
-#include "json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "json.h"
 
 char* format_json(char* content_pointer) {
     simplify_json(content_pointer);
@@ -14,10 +15,12 @@ char* format_json(char* content_pointer) {
 
     for (int i = 0; i < content_length; i++) {
         if ((formated_content[i] == ':') || (formated_content[i] == ',')) {
-            char* resized_pointer = realloc(formated_content, content_length + 1 + 1);
+            char* resized_pointer =
+                realloc(formated_content, content_length + 1 + 1);
             formated_content = resized_pointer;
-            memmove(formated_content + i + 1 + 1, formated_content + i + 1, content_length - i);
-            formated_content[i+1] = ' ';
+            memmove(formated_content + i + 1 + 1, formated_content + i + 1,
+                    content_length - i);
+            formated_content[i + 1] = ' ';
             i++;
             content_length++;
         }
@@ -26,19 +29,28 @@ char* format_json(char* content_pointer) {
             if (level != 0) {
                 offsite += level * 2;
 
-                char* resized_pointer = realloc(formated_content, content_length + 1 + 1); // content_length + '\0' + '\n'(back) + '\n'
+                char* resized_pointer = realloc(
+                    formated_content,
+                    content_length + 1 +
+                        1);  // content_length + '\0' + '\n'(back) + '\n'
                 formated_content = resized_pointer;
-                memmove(formated_content + i + 1, formated_content + i, content_length + 1 - i);
+                memmove(formated_content + i + 1, formated_content + i,
+                        content_length + 1 - i);
                 formated_content[i] = ' ';
                 i++;
                 content_length++;
-                
-                resized_pointer = realloc(formated_content, content_length + 1 + 1 + offsite); // content_length + '\0' + '\n'
+
+                resized_pointer =
+                    realloc(formated_content,
+                            content_length + 1 + 1 +
+                                offsite);  // content_length + '\0' + '\n'
                 formated_content = resized_pointer;
-                memmove(formated_content + i + 1 + 1 + offsite, formated_content + i + 1, content_length - i);
-                
-                formated_content[i+1] = '\n';
-                for (int offsite_count = 0; offsite_count < offsite; offsite_count++) {
+                memmove(formated_content + i + 1 + 1 + offsite,
+                        formated_content + i + 1, content_length - i);
+
+                formated_content[i + 1] = '\n';
+                for (int offsite_count = 0; offsite_count < offsite;
+                     offsite_count++) {
                     formated_content[i + 2 + offsite_count] = ' ';
                 }
 
@@ -47,12 +59,17 @@ char* format_json(char* content_pointer) {
                 level++;
 
             } else {
-                char* resized_pointer = realloc(formated_content, content_length + 1 + 1 + offsite); // content_length + '\0' + '\n'
+                char* resized_pointer =
+                    realloc(formated_content,
+                            content_length + 1 + 1 +
+                                offsite);  // content_length + '\0' + '\n'
                 formated_content = resized_pointer;
-                memmove(formated_content + i + 1 + 1 + offsite, formated_content + i + 1, content_length - i);
-                
-                formated_content[i+1] = '\n';
-                for (int offsite_count = 2; offsite_count <= offsite+1; offsite_count++) {
+                memmove(formated_content + i + 1 + 1 + offsite,
+                        formated_content + i + 1, content_length - i);
+
+                formated_content[i + 1] = '\n';
+                for (int offsite_count = 2; offsite_count <= offsite + 1;
+                     offsite_count++) {
                     formated_content[i + offsite_count] = ' ';
                 }
 
@@ -60,13 +77,13 @@ char* format_json(char* content_pointer) {
                 i += 3 + offsite;
                 level++;
             }
-
-            
         }
         if (formated_content[i] == '}') {
-            char* resized_pointer = realloc(formated_content, content_length + 1 + 3);
+            char* resized_pointer =
+                realloc(formated_content, content_length + 1 + 3);
             formated_content = resized_pointer;
-            memmove(formated_content + i + 1, formated_content + i, content_length - i); // [1, 2, 3, 0]
+            memmove(formated_content + i + 1, formated_content + i,
+                    content_length - i);  // [1, 2, 3, 0]
             formated_content[i] = '\n';
 
             content_length += 1;
