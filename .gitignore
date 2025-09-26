@@ -1,4 +1,5 @@
 .vscode
 program
+test_runner
 example.json
 compile_commands.json

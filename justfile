@@ -9,6 +9,7 @@ default:
     program format
 
 @clean:
+    rm -f test_runner
     rm -f main
 
 @generate-db:
@@ -19,3 +20,7 @@ default:
 
 @format:
     find src -type f -name '*.c' -exec clang-format -i {} +
+
+@test:
+    gcc -Wall -Iinclude -o test_runner tests/check_json_simplify.c src/file_management.c src/json.c src/format.c -lcheck
+    ./test_runner
