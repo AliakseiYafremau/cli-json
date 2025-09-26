@@ -1,6 +1,6 @@
 [private]
 default:
-    just run
+    just --list
 
 @build:
     gcc -Wall -Iinclude src/main.c src/file_management.c src/json.c src/format.c -o program
