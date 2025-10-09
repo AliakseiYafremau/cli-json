@@ -1,0 +1,1 @@
+Suite* json_suite(void);

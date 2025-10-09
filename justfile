@@ -20,7 +20,8 @@ default:
 
 @format:
     find src -type f -name '*.c' -exec clang-format -i {} +
+    find tests -type f -name '*.c' -exec clang-format -i {} +
 
 @test:
-    gcc -Wall -Iinclude -o test_runner tests/check_json_simplify.c src/file_management.c src/json.c src/format.c -lcheck
+    gcc -Wall -Iinclude -o test_runner tests/main.c tests/check_simplify_json.c src/file_management.c src/json.c src/format.c -lcheck
     ./test_runner

@@ -1,1 +1,1 @@
-void simplify_json(char json_content[]);
+char* simplify_json(char json_content[]);

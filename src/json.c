@@ -1,17 +1,24 @@
+#include <stdlib.h>
 #include <string.h>
 
-// Delete spaces and '\n'
-void simplify_json(char json_content[]) {
-    char* simplified_content = json_content;
-    char* source = json_content;
+char* simplify_json(const char json_content[]) {
+    size_t length = strlen(json_content);
+
+    char* simplified_content = (char*)malloc(length + 1);
+    if (!simplified_content) return NULL;
+
+    const char* source = json_content;
+    char* destination = simplified_content;
 
     while (*source) {
-        if ((*source != ' ') && (*source != '\n')) {
-            *simplified_content = *source;
-            simplified_content++;
+        if (*source != ' ' && *source != '\n') {
+            *destination = *source;
+            destination++;
         }
         source++;
     }
 
-    *simplified_content = '\0';
+    *destination = '\0';
+
+    return simplified_content;
 }
