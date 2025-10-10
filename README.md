@@ -3,21 +3,21 @@
 Console tool to format and process JSON files
 
 **Key features**:
-- 🔄 formatting (in development)
-- ❌ validation (planned)
+- ✅ formatting (in development)
+- 🔄 validation (planned)
 
-## Features
+## Features ✨
 
 ```
 CLI-json is a tool is designed for fast formatting of JSON files.
 
     Available commands:
         help                     print this message
-        read <filename>         output formatted content of the file
+        read <filename>          output formatted content of the file
         format <filename>        format the file
 ```
 
-## Usage
+## Usage 👨‍💻
 
 ### Requirements
 
@@ -27,7 +27,7 @@ CLI-json is a tool is designed for fast formatting of JSON files.
 - [check](https://libcheck.github.io/check/web/install.html) (to test)
 - [just](https://just.systems/man/en/) (optional)
 
-### Build
+### Build and Run
 
 To build the project:
 ```
@@ -45,6 +45,8 @@ To run the project:
 ```bash
 just run
 ```
+
+### Development
 
 Also you can use linter and formatter ([`clang-tidy`](https://clang.llvm.org/extra/clang-tidy/) and [`clang-format`](https://clang.llvm.org/docs/ClangFormat.html) must be installed)
 ```bash
