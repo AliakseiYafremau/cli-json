@@ -86,12 +86,15 @@ char* format_json(char* content_pointer) {
             int offsite = 0;
             offsite += level * 2;
 
-            char* resized_pointer = realloc(formated_content, content_length + 1 + 1 + offsite);
+            char* resized_pointer =
+                realloc(formated_content, content_length + 1 + 1 + offsite);
             formated_content = resized_pointer;
-            memmove(formated_content + i + 1 + 1 + offsite, formated_content + i + 1, content_length - i);
+            memmove(formated_content + i + 1 + 1 + offsite,
+                    formated_content + i + 1, content_length - i);
 
             formated_content[i] = '\n';
-            for (int offsite_count = 0; offsite_count < offsite; offsite_count++) {
+            for (int offsite_count = 0; offsite_count < offsite;
+                 offsite_count++) {
                 formated_content[i + 1 + offsite_count] = ' ';
             }
             formated_content[i + 1 + offsite] = ']';
@@ -106,10 +109,12 @@ char* format_json(char* content_pointer) {
             char* resized_pointer =
                 realloc(formated_content, content_length + 1 + 1 + offsite);
             formated_content = resized_pointer;
-            memmove(formated_content + i + 1 + 1 + offsite, formated_content + i + 1, content_length - i);
+            memmove(formated_content + i + 1 + 1 + offsite,
+                    formated_content + i + 1, content_length - i);
 
             formated_content[i] = '\n';
-            for (int offsite_count = 0; offsite_count < offsite; offsite_count++) {
+            for (int offsite_count = 0; offsite_count < offsite;
+                 offsite_count++) {
                 formated_content[i + 1 + offsite_count] = ' ';
             }
             formated_content[i + 1 + offsite] = '}';

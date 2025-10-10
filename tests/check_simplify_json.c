@@ -31,8 +31,6 @@ START_TEST(test_one_line_json) {
 }
 END_TEST
 
-
-
 Suite *json_suite(void) {
     Suite *s = suite_create("JSON");
 
