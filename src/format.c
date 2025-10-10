@@ -20,7 +20,7 @@ char* format_json(char* content_pointer) {
                 realloc(formated_content, content_length + 1 + 1);
             formated_content = resized_pointer;
             memmove(formated_content + i + 1 + 1, formated_content + i + 1,
-                    content_length - i);
+                    content_length - i + 1);
             formated_content[i + 1] = ' ';
             i++;
             content_length++;
@@ -48,7 +48,7 @@ char* format_json(char* content_pointer) {
                 realloc(formated_content, content_length + 1 + 1 + offsite);
             formated_content = resized_pointer;
             memmove(formated_content + i + 1 + 1 + offsite,
-                    formated_content + i + 1, content_length - i);
+                    formated_content + i + 1, content_length - i + 1);
             formated_content[i + 1] = '\n';
             for (int offsite_count = 0; offsite_count < offsite;
                  offsite_count++) {
@@ -57,7 +57,11 @@ char* format_json(char* content_pointer) {
             i += 1 + offsite;
             content_length += 1 + offsite;
         }
-        if (formated_content[i] == '{') {
+        if ((formated_content[i] == '{')) {
+            if (i + 1 < content_length && formated_content[i + 1] == '}') {
+        // "{}" — пропускаем форматирование и уровень НЕ меняем
+        continue;
+    }
             int offsite = 2;
             offsite += level * 2;
 
@@ -67,7 +71,7 @@ char* format_json(char* content_pointer) {
                             offsite);  // content_length + '\0' + '\n'
             formated_content = resized_pointer;
             memmove(formated_content + i + 1 + 1 + offsite,
-                    formated_content + i + 1, content_length - i);
+                    formated_content + i + 1, content_length - i + 1);
 
             formated_content[i + 1] = '\n';
             for (int offsite_count = 0; offsite_count < offsite;
@@ -81,14 +85,13 @@ char* format_json(char* content_pointer) {
         }
         if (formated_content[i] == ']') {
             level--;
-            int offsite = 0;
-            offsite += level * 2;
+            int offsite = level * 2;
 
             char* resized_pointer =
                 realloc(formated_content, content_length + 1 + 1 + offsite);
             formated_content = resized_pointer;
             memmove(formated_content + i + 1 + 1 + offsite,
-                    formated_content + i + 1, content_length - i);
+                    formated_content + i + 1, content_length - i + 1);
 
             formated_content[i] = '\n';
             for (int offsite_count = 0; offsite_count < offsite;
@@ -101,6 +104,10 @@ char* format_json(char* content_pointer) {
             i += 1 + offsite;
         }
         if (formated_content[i] == '}') {
+            if (i > 0 && formated_content[i - 1] == '{') {
+        // "{}" — пропускаем форматирование и уровень НЕ меняем
+        continue;
+    }
             int offsite = 0;
             offsite += (level - 1) * 2;
 
@@ -108,7 +115,7 @@ char* format_json(char* content_pointer) {
                 realloc(formated_content, content_length + 1 + 1 + offsite);
             formated_content = resized_pointer;
             memmove(formated_content + i + 1 + 1 + offsite,
-                    formated_content + i + 1, content_length - i);
+                    formated_content + i + 1, content_length - i + 1);
 
             formated_content[i] = '\n';
             for (int offsite_count = 0; offsite_count < offsite;
