@@ -3,7 +3,7 @@
 Console tool to format and process JSON files
 
 **Key features**:
-- ✅ formatting (in development)
+- ✅ formatting
 - 🔄 validation (planned)
 
 ## Features ✨
@@ -41,9 +41,6 @@ just build
 To run the project:
 ```
 ./cli-json
-```
-```bash
-just run
 ```
 
 ### Development

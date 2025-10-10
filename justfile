@@ -5,9 +5,6 @@ default:
 @build:
     gcc -Wall -Iinclude src/main.c src/file_management.c src/json.c src/format.c -o cli-json
 
-@run: build
-    cli-json format
-
 @clean:
     rm -f test_runner
     rm -f cli-json
