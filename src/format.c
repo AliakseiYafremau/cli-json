@@ -9,7 +9,8 @@ char* format_json(char* content_pointer) {
 
     int content_length = strlen(content_pointer);
     char* formated_content = malloc(content_length + 1);
-    strcpy(formated_content, content_pointer);
+    // strcpy(formated_content, content_pointer);
+    snprintf(formated_content, content_length + 1, "%s", content_pointer);
 
     int level = 0;
 
