@@ -24,8 +24,7 @@ int parse_arguments(int argc, char* argv[]) {
             "Available commands:\n"
             "\thelp                     print this message\n"
             "\tread <filename>          output formatted content of the file\n"
-            "\tformat <filename>        format the file\n"
-        );
+            "\tformat <filename>        format the file\n");
         return 0;
     }
 

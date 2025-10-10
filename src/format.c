@@ -34,7 +34,8 @@ char* format_json(char* content_pointer) {
             memmove(formated_content + i + 1 + 1 + offsite,
                     formated_content + i + 1, content_length - i + 1);
             formated_content[i + 1] = '\n';
-            for (int offsite_count = 0; offsite_count < offsite; offsite_count++) {
+            for (int offsite_count = 0; offsite_count < offsite;
+                 offsite_count++) {
                 formated_content[i + 2 + offsite_count] = ' ';
             }
             content_length += 1 + offsite;
