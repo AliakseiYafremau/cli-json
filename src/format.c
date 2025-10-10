@@ -14,6 +14,10 @@ char* format_json(char* content_pointer) {
     int level = 0;
 
     for (int i = 0; i < content_length; i++) {
+        if (formated_content[i] == '{' && i + 1 < content_length &&
+            formated_content[i + 1] == '}') {
+            continue;
+        }
         if (formated_content[i] == ':') {
             char* resized_pointer =
                 realloc(formated_content, content_length + 1 + 1);
@@ -57,10 +61,8 @@ char* format_json(char* content_pointer) {
             content_length += 1 + offsite;
         }
         if ((formated_content[i] == '{')) {
-            if (i + 1 < content_length && formated_content[i + 1] == '}') {
-                continue;
-            }
-            int offsite = 2;
+            level++;
+            int offsite = 0;
             offsite += level * 2;
 
             char* resized_pointer =
@@ -79,7 +81,6 @@ char* format_json(char* content_pointer) {
 
             content_length += 3 + offsite;
             i += 3 + offsite;
-            level++;
             continue;
         }
         if (formated_content[i] == ']') {
@@ -103,7 +104,7 @@ char* format_json(char* content_pointer) {
             i += 1 + offsite;
         }
         if (formated_content[i] == '}') {
-                        if (i > 0 && formated_content[i - 1] == '{') {
+            if (i > 0 && formated_content[i - 1] == '{') {
                 continue;
             }
             int offsite = 0;
