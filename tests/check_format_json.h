@@ -1,0 +1,1 @@
+Suite* json_format_suite(void);

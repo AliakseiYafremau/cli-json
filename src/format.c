@@ -9,7 +9,6 @@ char* format_json(char* content_pointer) {
 
     int content_length = strlen(content_pointer);
     char* formated_content = malloc(content_length + 1);
-    // strcpy(formated_content, content_pointer);
     snprintf(formated_content, content_length + 1, "%s", content_pointer);
 
     int level = 0;
@@ -59,9 +58,8 @@ char* format_json(char* content_pointer) {
         }
         if ((formated_content[i] == '{')) {
             if (i + 1 < content_length && formated_content[i + 1] == '}') {
-        // "{}" — пропускаем форматирование и уровень НЕ меняем
-        continue;
-    }
+                continue;
+            }
             int offsite = 2;
             offsite += level * 2;
 
@@ -82,6 +80,7 @@ char* format_json(char* content_pointer) {
             content_length += 3 + offsite;
             i += 3 + offsite;
             level++;
+            continue;
         }
         if (formated_content[i] == ']') {
             level--;
@@ -104,10 +103,9 @@ char* format_json(char* content_pointer) {
             i += 1 + offsite;
         }
         if (formated_content[i] == '}') {
-            if (i > 0 && formated_content[i - 1] == '{') {
-        // "{}" — пропускаем форматирование и уровень НЕ меняем
-        continue;
-    }
+                        if (i > 0 && formated_content[i - 1] == '{') {
+                continue;
+            }
             int offsite = 0;
             offsite += (level - 1) * 2;
 

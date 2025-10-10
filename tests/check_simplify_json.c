@@ -265,7 +265,7 @@ START_TEST(test_deep_mixed_structure) {
 }
 END_TEST
 
-Suite *json_suite(void) {
+Suite *json_simplify_suite(void) {
     Suite *s = suite_create("JSON");
 
     TCase *tc_core = tcase_create("Core");

@@ -1,6 +1,6 @@
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 char* simplify_json(const char json_content[]) {
     size_t length = strlen(json_content);
@@ -20,7 +20,8 @@ char* simplify_json(const char json_content[]) {
             if (*source == '"') {
                 is_string = false;
             }
-        } else if (*source != ' ' && *source != '\n' && *source != '\t' && *source != '\r') {
+        } else if (*source != ' ' && *source != '\n' && *source != '\t' &&
+                   *source != '\r') {
             *destination = *source;
             destination++;
             if (*source == '"') {

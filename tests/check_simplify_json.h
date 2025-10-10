@@ -1,1 +1,1 @@
-Suite* json_suite(void);
+Suite* json_simplify_suite(void);
