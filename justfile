@@ -3,14 +3,14 @@ default:
     just --list
 
 @build:
-    gcc -Wall -Iinclude src/main.c src/file_management.c src/json.c src/format.c -o program
+    gcc -Wall -Iinclude src/main.c src/file_management.c src/json.c src/format.c -o cli-json
 
 @run: build
-    program format
+    cli-json format
 
 @clean:
     rm -f test_runner
-    rm -f main
+    rm -f cli-json
 
 @generate-db:
     bear -- just build

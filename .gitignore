@@ -1,5 +1,5 @@
 .vscode
-program
+cli-json
 test_runner
 example.json
 compile_commands.json
