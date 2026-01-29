@@ -6,9 +6,9 @@
 
 int main(void) {
     int failed;
-    Suite *simplify_suite = json_simplify_suite();
-    Suite *format_suite = json_format_suite();
-    SRunner *sr = srunner_create(simplify_suite);
+    Suite* simplify_suite = json_simplify_suite();
+    Suite* format_suite = json_format_suite();
+    SRunner* sr = srunner_create(simplify_suite);
     srunner_add_suite(sr, format_suite);
 
     srunner_run_all(sr, CK_NORMAL);

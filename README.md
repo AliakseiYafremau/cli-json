@@ -25,7 +25,8 @@ CLI-json is a tool is designed for fast formatting of JSON files.
 - [clang-tidy](https://clang.llvm.org/extra/clang-tidy/) (to lint)
 - [clang-format](https://clang.llvm.org/docs/ClangFormat.html) (to format)
 - [check](https://libcheck.github.io/check/web/install.html) (to test)
-- [just](https://just.systems/man/en/) (optional)
+- make
+- [bear](https://github.com/rizsotto/Bear) (optional, to generate `compile_commands.json`)
 
 ### Build and Run
 
@@ -33,9 +34,9 @@ To build the project:
 ```
 gcc -Wall -Iinclude src/main.c src/file_management.c src/json.c src/format.c -o cli-json
 ```
-Or you can use **just**:
+Or you can use **make**:
 ```bash
-just build
+make build
 ```
 
 To run the project:
@@ -47,11 +48,11 @@ To run the project:
 
 Also you can use linter and formatter ([`clang-tidy`](https://clang.llvm.org/extra/clang-tidy/) and [`clang-format`](https://clang.llvm.org/docs/ClangFormat.html) must be installed)
 ```bash
-just lint
-just format
+make lint
+make format
 ```
 
 To test your code run ([`check`](https://libcheck.github.io/check/web/install.html) must be installed):
 ```
-just test
+make test
 ```

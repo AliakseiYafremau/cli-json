@@ -8,7 +8,7 @@ START_TEST(test_not_json) {
     char test_json[] = "1234";
 
     // Act
-    char *simplified_json = simplify_json(test_json);
+    char* simplified_json = simplify_json(test_json);
 
     // Assert
     ck_assert_str_eq(simplified_json, expected);
@@ -24,7 +24,7 @@ START_TEST(test_one_line) {
         "}";
 
     // Act
-    char *simplified_json = simplify_json(test_json);
+    char* simplified_json = simplify_json(test_json);
 
     // Assert
     ck_assert_str_eq(simplified_json, expected);
@@ -41,7 +41,7 @@ START_TEST(test_multiple_line) {
         "}";
 
     // Act
-    char *simplified_json = simplify_json(test_json);
+    char* simplified_json = simplify_json(test_json);
 
     // Assert
     ck_assert_str_eq(simplified_json, expected);
@@ -57,7 +57,7 @@ START_TEST(test_list) {
         "}";
 
     // Act
-    char *simplified_json = simplify_json(test_json);
+    char* simplified_json = simplify_json(test_json);
 
     // Assert
     ck_assert_str_eq(simplified_json, expected);
@@ -69,7 +69,7 @@ START_TEST(test_empty_object) {
     char test_json[] = "{   \n   \t  }";
 
     // Act
-    char *simplified_json = simplify_json(test_json);
+    char* simplified_json = simplify_json(test_json);
 
     // Assert
     ck_assert_str_eq(simplified_json, expected);
@@ -82,7 +82,7 @@ START_TEST(test_empty_array) {
     char test_json[] = "[   \n   \t  ]";
 
     // Act
-    char *simplified_json = simplify_json(test_json);
+    char* simplified_json = simplify_json(test_json);
 
     // Assert
     ck_assert_str_eq(simplified_json, expected);
@@ -100,7 +100,7 @@ START_TEST(test_nested_objects_arrays) {
         "}";
 
     // Act
-    char *simplified_json = simplify_json(test_json);
+    char* simplified_json = simplify_json(test_json);
 
     // Assert
     ck_assert_str_eq(simplified_json, expected);
@@ -116,7 +116,7 @@ START_TEST(test_string_internal_spaces_preserved) {
         "}";
 
     // Act
-    char *simplified_json = simplify_json(test_json);
+    char* simplified_json = simplify_json(test_json);
 
     // Assert
     ck_assert_str_eq(simplified_json, expected);
@@ -132,7 +132,7 @@ START_TEST(test_escaped_quotes_and_backslash) {
         "}";
 
     // Act
-    char *simplified_json = simplify_json(test_json);
+    char* simplified_json = simplify_json(test_json);
 
     // Assert
     ck_assert_str_eq(simplified_json, expected);
@@ -149,7 +149,7 @@ START_TEST(test_unicode_escape_sequences) {
         "}";
 
     // Act
-    char *simplified_json = simplify_json(test_json);
+    char* simplified_json = simplify_json(test_json);
 
     // Assert
     ck_assert_str_eq(simplified_json, expected);
@@ -163,7 +163,7 @@ START_TEST(test_numbers_booleans_null) {
         "{  \"n\"  :  -12.34e+10 ,  \"b\" :  true , \"z\" :  null }";
 
     // Act
-    char *simplified_json = simplify_json(test_json);
+    char* simplified_json = simplify_json(test_json);
 
     // Assert
     ck_assert_str_eq(simplified_json, expected);
@@ -181,7 +181,7 @@ START_TEST(test_whitespace_variants) {
         "}\n";
 
     // Act
-    char *simplified_json = simplify_json(test_json);
+    char* simplified_json = simplify_json(test_json);
 
     // Assert
     ck_assert_str_eq(simplified_json, expected);
@@ -194,7 +194,7 @@ START_TEST(test_already_minified) {
     char test_json[] = "{\"k\":[1,2,3]}";
 
     // Act
-    char *simplified_json = simplify_json(test_json);
+    char* simplified_json = simplify_json(test_json);
 
     // Assert
     ck_assert_str_eq(simplified_json, expected);
@@ -208,7 +208,7 @@ START_TEST(test_large_array_spaces) {
         "{ \"arr\" : [ 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 ] }";
 
     // Act
-    char *simplified_json = simplify_json(test_json);
+    char* simplified_json = simplify_json(test_json);
 
     // Assert
     ck_assert_str_eq(simplified_json, expected);
@@ -222,7 +222,7 @@ START_TEST(test_colon_comma_spacing) {
         "{ \"a\"  :  1  ,  \"b\" : { \"c\"  : 2 } ,  \"d\" : [ 3 , 4 ] }";
 
     // Act
-    char *simplified_json = simplify_json(test_json);
+    char* simplified_json = simplify_json(test_json);
 
     // Assert
     ck_assert_str_eq(simplified_json, expected);
@@ -238,7 +238,7 @@ START_TEST(test_braces_in_string_unchanged) {
         "}";
 
     // Act
-    char *simplified_json = simplify_json(test_json);
+    char* simplified_json = simplify_json(test_json);
 
     // Assert
     ck_assert_str_eq(simplified_json, expected);
@@ -258,17 +258,17 @@ START_TEST(test_deep_mixed_structure) {
         "}";
 
     // Act
-    char *simplified_json = simplify_json(test_json);
+    char* simplified_json = simplify_json(test_json);
 
     // Assert
     ck_assert_str_eq(simplified_json, expected);
 }
 END_TEST
 
-Suite *json_simplify_suite(void) {
-    Suite *s = suite_create("JSON");
+Suite* json_simplify_suite(void) {
+    Suite* s = suite_create("JSON");
 
-    TCase *tc_core = tcase_create("Core");
+    TCase* tc_core = tcase_create("Core");
     tcase_add_test(tc_core, test_not_json);
     tcase_add_test(tc_core, test_one_line);
     tcase_add_test(tc_core, test_multiple_line);
