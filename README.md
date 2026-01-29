@@ -4,7 +4,7 @@ Console tool to format and process JSON files
 
 **Key features**:
 - ✅ formatting
-- 🔄 validation (planned)
+- ✅ validation
 
 ## Features ✨
 
