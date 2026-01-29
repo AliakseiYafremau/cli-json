@@ -15,6 +15,7 @@ CLI-json is a tool is designed for fast formatting of JSON files.
         help                     print this message
         read <filename>          output formatted content of the file
         format <filename>        format the file
+        validate <filename>      validate json, prints true/false
 ```
 
 ## Usage 👨‍💻

@@ -5,7 +5,7 @@ CFLAGS := -Wall -Iinclude
 
 SRC := src/main.c src/file_management.c src/json.c src/format.c
 LIB_SRC := src/file_management.c src/json.c src/format.c
-TEST_SRC := tests/main.c tests/check_simplify_json.c tests/check_format_json.c
+TEST_SRC := tests/main.c tests/check_simplify_json.c tests/check_format_json.c tests/check_validate_json.c
 
 all: build
 

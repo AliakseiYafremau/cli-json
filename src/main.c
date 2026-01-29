@@ -4,6 +4,7 @@
 
 #include "file_management.h"
 #include "format.h"
+#include "json.h"
 
 int parse_arguments(int argc, char* argv[]);
 
@@ -24,11 +25,13 @@ int parse_arguments(int argc, char* argv[]) {
             "Available commands:\n"
             "\thelp                     print this message\n"
             "\tread <filename>          output formatted content of the file\n"
-            "\tformat <filename>        format the file\n");
+            "\tformat <filename>        format the file\n"
+            "\tvalidate <filename>      validate json, prints true/false\n");
         return 0;
     }
 
-    if ((strcmp(argv[1], "read") && (strcmp(argv[1], "format")))) {
+    if (strcmp(argv[1], "read") && strcmp(argv[1], "format") &&
+        strcmp(argv[1], "validate")) {
         printf("Incorrect parameters. For help, try 'cli-json help'.\n");
         return 1;
     }
@@ -39,6 +42,13 @@ int parse_arguments(int argc, char* argv[]) {
         printf("Incorrect file path entered: '%s'\n", argv[2]);
         return 1;
     }
+    if (!(strcmp(argv[1], "validate"))) {
+        int valid = validate_json(file_content_pointer);
+        printf("%s\n", valid ? "true" : "false");
+        free(file_content_pointer);
+        return valid ? 0 : 1;
+    }
+
     char* formated = format_json(file_content_pointer);
     if (!(strcmp(argv[1], "read"))) {
         printf("%s\n", file_content_pointer);
