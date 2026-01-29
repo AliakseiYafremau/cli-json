@@ -5,6 +5,60 @@
 
 #include "json.h"
 
+static bool ensure_capacity(char** buffer, size_t* capacity, size_t needed) {
+    if (needed < *capacity) return true;
+    while (needed >= *capacity) {
+        *capacity *= 2;
+    }
+    char* resized = realloc(*buffer, *capacity);
+    if (!resized) return false;
+    *buffer = resized;
+    return true;
+}
+
+static bool append_char(char** buffer, size_t* capacity, size_t* length,
+                        char value) {
+    if (!ensure_capacity(buffer, capacity, *length + 2)) return false;
+    (*buffer)[(*length)++] = value;
+    return true;
+}
+
+static bool append_indent(char** buffer, size_t* capacity, size_t* length,
+                          int level) {
+    size_t needed = *length + (size_t)level * 2 + 1;
+    if (!ensure_capacity(buffer, capacity, needed)) return false;
+    for (int i = 0; i < level * 2; i++) {
+        (*buffer)[(*length)++] = ' ';
+    }
+    return true;
+}
+
+static bool object_has_nested_compound(const char* input, size_t start,
+                                       size_t input_length) {
+    bool in_string = false;
+    bool escape = false;
+    for (size_t i = start + 1; i < input_length; i++) {
+        char c = input[i];
+        if (in_string) {
+            if (escape) {
+                escape = false;
+            } else if (c == '\\') {
+                escape = true;
+            } else if (c == '"') {
+                in_string = false;
+            }
+            continue;
+        }
+        if (c == '"') {
+            in_string = true;
+            continue;
+        }
+        if (c == '{' || c == '[') return true;
+        if (c == '}') break;
+    }
+    return false;
+}
+
 char* format_json(char* content_pointer) {
     char* simplified = simplify_json(content_pointer);
     if (!simplified) return NULL;
@@ -12,25 +66,32 @@ char* format_json(char* content_pointer) {
     size_t input_length = strlen(simplified);
     size_t capacity = input_length * 4 + 16;
     char* formated_content = malloc(capacity);
-    if (!formated_content) return NULL;
+    if (!formated_content) {
+        free(simplified);
+        return NULL;
+    }
+
+    char* container_stack = malloc(input_length + 1);
+    bool* inline_object_stack = malloc((input_length + 1) * sizeof(bool));
+    if (!container_stack || !inline_object_stack) {
+        free(simplified);
+        free(formated_content);
+        free(container_stack);
+        free(inline_object_stack);
+        return NULL;
+    }
 
     size_t out_len = 0;
     int level = 0;
+    int stack_top = -1;
     bool in_string = false;
     bool escape = false;
-    char* container_stack = malloc(input_length + 1);
-    bool* inline_object_stack = malloc((input_length + 1) * sizeof(bool));
-    int stack_top = -1;
 
     for (size_t i = 0; i < input_length; i++) {
         char c = simplified[i];
 
         if (in_string) {
-            if (out_len + 2 >= capacity) {
-                capacity *= 2;
-                formated_content = realloc(formated_content, capacity);
-            }
-            formated_content[out_len++] = c;
+            if (!append_char(&formated_content, &capacity, &out_len, c)) break;
             if (escape) {
                 escape = false;
             } else if (c == '\\') {
@@ -42,77 +103,33 @@ char* format_json(char* content_pointer) {
         }
 
         if (c == '"') {
-            if (out_len + 2 >= capacity) {
-                capacity *= 2;
-                formated_content = realloc(formated_content, capacity);
-            }
-            formated_content[out_len++] = c;
+            if (!append_char(&formated_content, &capacity, &out_len, c)) break;
             in_string = true;
             continue;
         }
 
         if (c == '{' && i + 1 < input_length && simplified[i + 1] == '}') {
-            if (out_len + 3 >= capacity) {
-                capacity *= 2;
-                formated_content = realloc(formated_content, capacity);
-            }
-            formated_content[out_len++] = '{';
-            formated_content[out_len++] = '}';
+            if (!append_char(&formated_content, &capacity, &out_len, '{')) break;
+            if (!append_char(&formated_content, &capacity, &out_len, '}')) break;
             i++;
             continue;
         }
 
         if (c == '{') {
-            bool has_nested = false;
-            bool scan_in_string = false;
-            bool scan_escape = false;
-            for (size_t j = i + 1; j < input_length; j++) {
-                char sc = simplified[j];
-                if (scan_in_string) {
-                    if (scan_escape) {
-                        scan_escape = false;
-                    } else if (sc == '\\') {
-                        scan_escape = true;
-                    } else if (sc == '"') {
-                        scan_in_string = false;
-                    }
-                    continue;
-                }
-                if (sc == '"') {
-                    scan_in_string = true;
-                    continue;
-                }
-                if (sc == '{' || sc == '[') {
-                    has_nested = true;
-                    break;
-                }
-                if (sc == '}') break;
-            }
-
             bool inline_object =
                 (stack_top == 0 && container_stack[stack_top] == '[' &&
-                 !has_nested);
+                 !object_has_nested_compound(simplified, i, input_length));
             stack_top++;
             container_stack[stack_top] = '{';
             inline_object_stack[stack_top] = inline_object;
             level++;
-            if (inline_object) {
-                if (out_len + 2 >= capacity) {
-                    capacity *= 2;
-                    formated_content = realloc(formated_content, capacity);
-                }
-                formated_content[out_len++] = '{';
-                continue;
-            }
 
-            size_t needed = 2 + (size_t)level * 2;
-            while (out_len + needed + 1 >= capacity) capacity *= 2;
-            formated_content = realloc(formated_content, capacity);
-            formated_content[out_len++] = '{';
-            formated_content[out_len++] = '\n';
-            for (int s = 0; s < level * 2; s++) {
-                formated_content[out_len++] = ' ';
-            }
+            if (!append_char(&formated_content, &capacity, &out_len, '{')) break;
+            if (inline_object) continue;
+            if (!append_char(&formated_content, &capacity, &out_len, '\n'))
+                break;
+            if (!append_indent(&formated_content, &capacity, &out_len, level))
+                break;
             continue;
         }
 
@@ -121,27 +138,22 @@ char* format_json(char* content_pointer) {
             container_stack[stack_top] = '[';
             inline_object_stack[stack_top] = false;
             level++;
-            size_t needed = 2 + (size_t)level * 2;
-            while (out_len + needed + 1 >= capacity) capacity *= 2;
-            formated_content = realloc(formated_content, capacity);
-            formated_content[out_len++] = '[';
-            formated_content[out_len++] = '\n';
-            for (int s = 0; s < level * 2; s++) {
-                formated_content[out_len++] = ' ';
-            }
+
+            if (!append_char(&formated_content, &capacity, &out_len, '[')) break;
+            if (!append_char(&formated_content, &capacity, &out_len, '\n'))
+                break;
+            if (!append_indent(&formated_content, &capacity, &out_len, level))
+                break;
             continue;
         }
 
         if (c == ']') {
-            size_t needed = 2 + (size_t)(level - 1) * 2;
-            while (out_len + needed + 1 >= capacity) capacity *= 2;
-            formated_content = realloc(formated_content, capacity);
-            formated_content[out_len++] = '\n';
-            for (int s = 0; s < (level - 1) * 2; s++) {
-                formated_content[out_len++] = ' ';
-            }
-            formated_content[out_len++] = ']';
             level--;
+            if (!append_char(&formated_content, &capacity, &out_len, '\n'))
+                break;
+            if (!append_indent(&formated_content, &capacity, &out_len, level))
+                break;
+            if (!append_char(&formated_content, &capacity, &out_len, ']')) break;
             if (stack_top >= 0 && container_stack[stack_top] == '[') {
                 stack_top--;
             }
@@ -152,23 +164,15 @@ char* format_json(char* content_pointer) {
             bool inline_object =
                 (stack_top >= 0 && container_stack[stack_top] == '{' &&
                  inline_object_stack[stack_top]);
-            if (inline_object) {
-                if (out_len + 2 >= capacity) {
-                    capacity *= 2;
-                    formated_content = realloc(formated_content, capacity);
-                }
-                formated_content[out_len++] = '}';
-            } else {
-                size_t needed = 2 + (size_t)(level - 1) * 2;
-                while (out_len + needed + 1 >= capacity) capacity *= 2;
-                formated_content = realloc(formated_content, capacity);
-                formated_content[out_len++] = '\n';
-                for (int s = 0; s < (level - 1) * 2; s++) {
-                    formated_content[out_len++] = ' ';
-                }
-                formated_content[out_len++] = '}';
-            }
             level--;
+            if (!inline_object) {
+                if (!append_char(&formated_content, &capacity, &out_len, '\n'))
+                    break;
+                if (!append_indent(&formated_content, &capacity, &out_len,
+                                   level))
+                    break;
+            }
+            if (!append_char(&formated_content, &capacity, &out_len, '}')) break;
             if (stack_top >= 0 && container_stack[stack_top] == '{') {
                 stack_top--;
             }
@@ -179,41 +183,27 @@ char* format_json(char* content_pointer) {
             bool inline_object =
                 (stack_top >= 0 && container_stack[stack_top] == '{' &&
                  inline_object_stack[stack_top]);
+            if (!append_char(&formated_content, &capacity, &out_len, ',')) break;
             if (inline_object) {
-                if (out_len + 3 >= capacity) {
-                    capacity *= 2;
-                    formated_content = realloc(formated_content, capacity);
-                }
-                formated_content[out_len++] = ',';
-                formated_content[out_len++] = ' ';
+                if (!append_char(&formated_content, &capacity, &out_len, ' '))
+                    break;
             } else {
-                size_t needed = 2 + (size_t)level * 2;
-                while (out_len + needed + 1 >= capacity) capacity *= 2;
-                formated_content = realloc(formated_content, capacity);
-                formated_content[out_len++] = ',';
-                formated_content[out_len++] = '\n';
-                for (int s = 0; s < level * 2; s++) {
-                    formated_content[out_len++] = ' ';
-                }
+                if (!append_char(&formated_content, &capacity, &out_len, '\n'))
+                    break;
+                if (!append_indent(&formated_content, &capacity, &out_len,
+                                   level))
+                    break;
             }
             continue;
         }
 
         if (c == ':') {
-            if (out_len + 3 >= capacity) {
-                capacity *= 2;
-                formated_content = realloc(formated_content, capacity);
-            }
-            formated_content[out_len++] = ':';
-            formated_content[out_len++] = ' ';
+            if (!append_char(&formated_content, &capacity, &out_len, ':')) break;
+            if (!append_char(&formated_content, &capacity, &out_len, ' ')) break;
             continue;
         }
 
-        if (out_len + 2 >= capacity) {
-            capacity *= 2;
-            formated_content = realloc(formated_content, capacity);
-        }
-        formated_content[out_len++] = c;
+        if (!append_char(&formated_content, &capacity, &out_len, c)) break;
     }
 
     formated_content[out_len] = '\0';
